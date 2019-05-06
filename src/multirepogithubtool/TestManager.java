@@ -23,7 +23,7 @@ public class TestManager {
     
     /**
      * replaces all the tests in all the repos with the tests in the
-     * provided directory.
+     * provided directory, and pushes the results.
      * @param dir a directory of replacement tests.
      */
     public void updateAllTestFiles(String dir){

@@ -414,7 +414,8 @@ public class RepoManager extends ArrayList<Repo> {
         commandAll(Repo.PUSH);
 
     }
-
+    
+    
     public void appendToAllReadme(String string) {
         forEach(repo -> repo.addToReadMe(string));
     }
