@@ -43,14 +43,10 @@ public class Moss extends RecursiveTask<String>{
      */
     private void setUpMossDir() {
 
-        for (Repo repo : rm) {
-//            System.out.println("coppying " + repo.name()
-//                    + " answers to mossDir/" + repo.getRepoDir().getName());
-            copyToDir(new File(repo.getRepoDir(), rm.getCourseSpecs().answerLocation),
-                    new File(mossDir, repo.getRepoDir().getName()));
-        }
+        rm.parallelStream().forEach(repo -> 
+                copyToDir(new File(repo.getRepoDir(), rm.getCourseSpecs().answerLocation),
+                    new File(mossDir, repo.getRepoDir().getName())));
 
-//        System.out.println("moss directory built");
     }
 
     /**
