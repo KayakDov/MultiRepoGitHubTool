@@ -7,9 +7,12 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -43,10 +46,12 @@ public class RepoManager extends ArrayList<Repo> {
     }
 
     public final static String DEF_FILE_LOC = "tempFileStorage";
+
     /**
      * Constructor, stores files to the default file location
+     *
      * @param courseSpecs
-     * @param baseRepoName 
+     * @param baseRepoName
      */
     public RepoManager(String courseSpecs, String baseRepoName) {
         this(courseSpecs, DEF_FILE_LOC, baseRepoName);
@@ -69,7 +74,6 @@ public class RepoManager extends ArrayList<Repo> {
         baseRepo = new File(parentAll, baseRepoName);
     }
 
-    
     /**
      * Creates a repo manager by cloning all the repos whose names have have the
      * given prefix in a GitHub organization.
@@ -91,6 +95,7 @@ public class RepoManager extends ArrayList<Repo> {
 
         return cloneOrg(new RepoManager(courseSpecs, baseRepoName), repoNamesStartsWith);
     }
+
     /**
      * Creates a repo manager by cloning all the repos whose names have have the
      * given prefix in a GitHub organization.
@@ -138,6 +143,7 @@ public class RepoManager extends ArrayList<Repo> {
 
     /**
      * clones and organizations repos into the provided repo manager
+     *
      * @param rm
      * @param repoNamesStartsWith
      * @return the repo manager, now full of repos.
@@ -160,7 +166,7 @@ public class RepoManager extends ArrayList<Repo> {
      * <br>language: python
      * <br>git access token: 680*************************272f44cbf811cdee
      *
-     * @return 
+     * @return
      */
     public static RepoManager loadFolder(String courseSpecs) {
 
@@ -189,18 +195,24 @@ public class RepoManager extends ArrayList<Repo> {
         rm.loadReposFromFolder();
         return rm;
     }
-    
+
     /**
      * finds the base file in the given RepoManager folder by selecting the
      * first repo found.
-     * @param dir a folder containing submissions and at least one repo/base file
+     *
+     * @param dir a folder containing submissions and at least one repo/base
+     * file
      * @return the name of the base file
      */
-    private static String baseFrom(String dir){
-        if(dir.equals("")) dir = DEF_FILE_LOC;
-        File[] chileren = new File(dir).listFiles();
-        for(File child: chileren) if(new Repo(child).isRepo()) return child.getName();
-        return "";
+    private static String baseFrom(String dir) {
+        if (dir.equals("")) dir = DEF_FILE_LOC;
+        Stream<File> children = Arrays.stream(new File(dir).listFiles());
+        try {
+            return children.parallel().filter(child -> new Repo(child).isRepo())
+                    .findAny().get().getName();
+        } catch (NoSuchElementException e) {
+            return "";
+        }
     }
 
     /**
@@ -389,13 +401,14 @@ public class RepoManager extends ArrayList<Repo> {
      * @param line
      */
     public void unignore(String line) { //"test_hidden.py"
-        forEach(targetRepo -> targetRepo.unignore(line));
+        parallelStream().forEach(targetRepo -> targetRepo.unignore(line));
 
     }
 
     /**
      * Run a command for each repo
-     * @param command 
+     *
+     * @param command
      */
     public void commandAll(String command) {
         forEach(repo -> repo.git(command));
@@ -414,10 +427,9 @@ public class RepoManager extends ArrayList<Repo> {
         commandAll(Repo.PUSH);
 
     }
-    
-    
+
     public void appendToAllReadme(String string) {
-        forEach(repo -> repo.addToReadMe(string));
+        parallelStream().forEach(repo -> repo.addToReadMe(string));
     }
 
     /**

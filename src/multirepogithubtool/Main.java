@@ -52,13 +52,16 @@ public class Main {
             if (args[0].equals("clone")) cloneOrg(args);
         } else {
 
-//        RepoManager rm = RepoManager.cloneOrg("CourseSpecs.txt",HW + 7 + "-","EE551_Spring2019_homework5");
+           
+            RepoManager rm = RepoManager.cloneOrg("CourseSpecs.txt", HW + 7
+                    + "-", "EE551_Spring2019_homework7");
+            
 //        RepoManager rm = RepoManager.loadFolder("CourseSpecs.txt");
-//        rm.commandAll(Repo.PUSH + " -f");
-//        Moss moss = new Moss(rm);
-//        moss.fork();
+
+            Moss moss = new Moss(rm);
+            moss.fork();
 //        new TestManager(rm).updateAllTestFiles("C:/Users/Kayak/Documents/GitHub/python Class Stuff/EE551_Spring2019_homework7/tests");
-//        System.out.println(moss.join());
+            System.out.println(moss.join());
         }
 
     }
