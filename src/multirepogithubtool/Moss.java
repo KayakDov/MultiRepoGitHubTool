@@ -4,7 +4,6 @@ import it.zielke.moji.MossException;
 import it.zielke.moji.SocketClient;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.concurrent.RecursiveTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;

@@ -1,10 +1,8 @@
 package multirepogithubtool;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import specs.*;
 
 /**
  * One file should be saved for each user for each lecture class.
@@ -14,17 +12,7 @@ import java.io.IOException;
  */
 public class CourseSpecs {
 
-    class MyBufferedReader extends BufferedReader {
 
-        public MyBufferedReader(File courseSpecs) throws FileNotFoundException {
-            super(new FileReader(courseSpecs));
-        }
-
-        @Override
-        public String readLine() throws IOException {
-            return super.readLine().split(": ")[1];
-        }
-    }
 
     public final String organizationName, answerLocation, mossUserID, programmingLanguage, gitAccessToken;
 
@@ -42,7 +30,7 @@ public class CourseSpecs {
      */
     public CourseSpecs(File specsFile) {
         try {
-            MyBufferedReader reader = new MyBufferedReader(specsFile);
+            SpecsReader reader = new SpecsReader(specsFile);
 
             this.organizationName = reader.readLine();
             this.answerLocation = reader.readLine();
