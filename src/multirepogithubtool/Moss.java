@@ -24,6 +24,7 @@ public class Moss extends RecursiveTask<String>{
         this.rm = rm;
         rm.getCourseSpecs();
         mossDir = new File(rm.getParentAll(), "mossWork");
+        mossDir.mkdir();
 
         this.socketClient = new SocketClient();
         socketClient.setUserID(rm.getCourseSpecs().mossUserID);
