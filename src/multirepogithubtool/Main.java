@@ -14,12 +14,11 @@ public class Main {
      * clones the company repos locally
      * 
      * @param args args[1] should be your course specs file. args[2] is
-     * optional, and should be the folder you want to load your files from, if
-     * it's not the default folder.
-     *
+     * the prefix for the repo name, args[3] is the name of the base repo, and
+     * args[4] is optionally the folder you download the repos to.
      */
-    public static void cloneOrg(String[] args) {
-//        RepoManager rm = RepoManager.cloneOrg("CourseSpecs.txt",HW + 5 + "-","EE551_Spring2019_homework5");
+    public static void clone(String[] args) {
+//        RepoManager rm = RepoManager.clone("CourseSpecs.txt",HW + 5 + "-","EE551_Spring2019_homework5");
         if (args.length == 4) RepoManager.cloneOrg(args[1], args[2], args[3]);
         if (args.length == 5)
             RepoManager.cloneOrg(args[1], args[2], args[3], args[4]);
@@ -77,19 +76,25 @@ public class Main {
      * moss.
      *
      * @param args the first arg should either be moss or clone. The following
-     * args should be the arguments for moss or cloneOrg.
+ args should be the arguments for moss or clone.
      */
     public static void main(String[] args) {
+        
+//        args = new String[4];
+//        args[0] = "clone";
+//        args[1] = "CourseSpecs.txt";
+//        args[2] = "ee551homework2-";
+//        args[3] = "EE551_Spring2019_homework2";
 
         if (args.length > 0) {
             if (args[0].equals("moss")) moss(args);
-            if (args[0].equals("clone")) cloneOrg(args);
+            if (args[0].equals("clone")) clone(args);
             if (args[0].equals("removeGitIgnore")) revmoveGitIgnore(args);
             if (args[0].equals("addCommitPush")) addCommitPush(args);
             if (args[0].equals("addTests")) addTests(args);
         } else {
 
-//            RepoManager rm = RepoManager.cloneOrg("CourseSpecs.txt", HW + 7
+//            RepoManager rm = RepoManager.clone("CourseSpecs.txt", HW + 7
 //                    + "-", "EE551_Spring2019_homework7");
 //        RepoManager rm = RepoManager.loadFolder("CourseSpecs.txt");
 //            Moss moss = new Moss(rm);

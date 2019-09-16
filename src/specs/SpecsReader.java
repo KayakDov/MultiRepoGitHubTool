@@ -14,6 +14,13 @@ public class SpecsReader extends BufferedReader {
 
     @Override
     public String readLine() throws IOException {
-        return super.readLine().split(": ")[1];
+        String line = super.readLine();
+        try {
+            return line.split(": ")[1];
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            System.err.println(line);
+            throw new RuntimeException(ex);
+        }
+        
     }
 }

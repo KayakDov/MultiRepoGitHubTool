@@ -249,9 +249,12 @@ public class RepoManager extends ArrayList<Repo> {
      */
     private boolean lastPage(File page) {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(page));
-            reader.readLine();
-            return !reader.readLine().contains("{");
+            String secondLine;
+            try (BufferedReader reader = new BufferedReader(new FileReader(page))) {
+                reader.readLine();
+                secondLine = reader.readLine();
+            }
+            return !secondLine.contains("{");
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
