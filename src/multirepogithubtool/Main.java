@@ -11,10 +11,14 @@ public class Main {
     public static final String HW = "homework";
 
     /**
+     * clones the company repos locally
+     * 
+     * @param args args[1] should be your course specs file. args[2] is
+     * optional, and should be the folder you want to load your files from, if
+     * it's not the default folder.
      *
-     * @param args
      */
-    private static void cloneOrg(String[] args) {
+    public static void cloneOrg(String[] args) {
 //        RepoManager rm = RepoManager.cloneOrg("CourseSpecs.txt",HW + 5 + "-","EE551_Spring2019_homework5");
         if (args.length == 4) RepoManager.cloneOrg(args[1], args[2], args[3]);
         if (args.length == 5)
@@ -59,7 +63,8 @@ public class Main {
     }
 
     /**
-     *  Adds the tests from the given folder to all of the repos.
+     * Adds the tests from the given folder to all of the repos.
+     *
      * @param args args[1]should be the course specs and args[2] the base repo,
      * and args[3] is the directory the tests are in.
      */
@@ -86,7 +91,6 @@ public class Main {
 
 //            RepoManager rm = RepoManager.cloneOrg("CourseSpecs.txt", HW + 7
 //                    + "-", "EE551_Spring2019_homework7");
-
 //        RepoManager rm = RepoManager.loadFolder("CourseSpecs.txt");
 //            Moss moss = new Moss(rm);
 //            moss.fork();
