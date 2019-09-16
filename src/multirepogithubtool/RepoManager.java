@@ -50,8 +50,8 @@ public class RepoManager extends ArrayList<Repo> {
     /**
      * Constructor, stores files to the default file location
      *
-     * @param courseSpecs
-     * @param baseRepoName
+     * @param courseSpecs the specs file for the course
+     * @param baseRepoName the name of the base repo
      */
     public RepoManager(String courseSpecs, String baseRepoName) {
         this(courseSpecs, DEF_FILE_LOC, baseRepoName);
@@ -59,7 +59,8 @@ public class RepoManager extends ArrayList<Repo> {
 
     /**
      * The constructor.
-     *
+     * @param bas        the location of the base repo.
+     * @param fileLoc the location of the parent file for the repos.
      * @param courseSpecs The the constructor for course specs.
      */
     private RepoManager(String courseSpecs, String fileLoc, String baseRepoName) {

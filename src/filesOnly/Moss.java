@@ -1,10 +1,10 @@
-
 package filesOnly;
 
 import it.zielke.moji.MossException;
 import it.zielke.moji.SocketClient;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.concurrent.RecursiveTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,70 +15,90 @@ import org.apache.commons.io.FileUtils;
  *
  * @author Kayak
  */
-public class Moss extends RecursiveTask<String>{
-    
+public class Moss {
+
     private File origDir, mossDir;
     private SocketClient socketClient;
-    
+    private MossSpecs mossSpecs;
 
-    public Moss(String folder, String specs) {
+    public Moss(String folder, String specs, String language) {
         origDir = new File(folder);
         mossDir = new File(origDir, "mossWork");
+        mossSpecs = new MossSpecs("MossSpecs.txt");
 
         this.socketClient = new SocketClient();
-        socketClient.setUserID(rm.getCourseSpecs().mossUserID);
+        socketClient.setUserID(mossSpecs.mossUserID);
         try {
-            socketClient.setLanguage(rm.getCourseSpecs().programmingLanguage);
+            socketClient.setLanguage(language);
         } catch (MossException ex) {
             Logger.getLogger(multirepogithubtool.Moss.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-    }
+        System.out.println(compute());
 
-    private String getMoss
+    }
 
     /**
      * uploads a file, and if it's a directory, recursively uploads everything
      * therein.
-     * @param file 
+     *
+     * @param file
      */
-    private void upload(File file, boolean isBase) throws IOException {
-        if (file.isFile()) 
-            SocketClient.uploadFile(file, isBase);
-    
+    private void upload(File file, boolean isBase) {
+        if (file.isFile())
+            try {
+                socketClient.uploadFile(file, isBase);
+            } catch (IOException ex) {
+                Logger.getLogger(Moss.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         if (file.isDirectory()) {
             File[] childeren = file.listFiles();
             for (File child : childeren) upload(child, isBase);
         }
     }
 
-    
-    private void setUpMossDir(){
-        
+    private void setUpMossDir() {
+        mossDir.mkdir();
+        Arrays.stream(origDir.listFiles()).parallel().filter(File::isFile).forEach(file -> {
+            File f = (File) file;
+            File target = new File(mossDir, f.getName());
+            target.mkdir();
+            try {
+                FileUtils.copyFileToDirectory(file, target);
+            } catch (IOException ex) {
+                Logger.getLogger(Moss.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            ;
+        });
+
     }
-    @Override
-    protected String compute() {
-         setUpMossDir();
+
+    public String compute() {
+        setUpMossDir();
         try {
             File[] mossDirectories = mossDir.listFiles();
-            SocketClient.run();
+            socketClient.run();
 
-            for (File dir : mossDirectories) upload(dir, false);
-            
+            for (File file : mossDirectories) upload(file, false);
+//            Arrays.stream(mossDirectories).parallel().forEach(dir -> upload((File)dir, false));
+
             socketClient.sendQuery();
 
             FileUtils.deleteDirectory(mossDir);
-            
-            return ("Moss results available at " + socketClient.getResultURL().toString());
-            
+
+            return ("Moss results available at "
+                    + socketClient.getResultURL().toString());
+
         } catch (Exception ex) {
-            Logger.getLogger(RepoManager.class.getName()).log(Level.SEVERE, null, ex);
             throw new RuntimeException(ex);
         }
     }
-        
+
+    public static void main(String[] args) {
+        SortJavaCPP.sort("C:/Users/Kayak/Documents/DAST_TA/submissions");
+        new Moss("C:/Users/Kayak/Documents/DAST_TA/submissions/cpp", "MossSpecs.txt", "cc");
+        new Moss("C:/Users/Kayak/Documents/DAST_TA/submissions/java", "MossSpecs.txt", "java");
+
     }
-    
-    
-    
 }

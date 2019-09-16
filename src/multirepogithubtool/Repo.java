@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
+import terminal.Terminal;
 
 /**
  *
@@ -20,24 +21,7 @@ import org.apache.commons.io.FileUtils;
 public class Repo {
 
     private final File repoDir;
-
-    private static final Runtime RUNTIME;
-    private Process mostRecentProcess;
-
-    static {
-        RUNTIME = Runtime.getRuntime();
-    }
-
-    /**
-     * Wait for this repo to complete the last command it executed.
-     */
-    public void waitFor() {
-        if (mostRecentProcess != null) try {
-            mostRecentProcess.waitFor(1, TimeUnit.MINUTES);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Repo.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+    private Terminal terminal;
 
     /**
      * Is the folder associated with this repository a repo.
@@ -45,7 +29,7 @@ public class Repo {
      * @return
      */
     public boolean isRepo() {
-        waitFor();
+        terminal.waitFor();
         return new File(repoDir, ".git").exists();
     }
 
@@ -56,6 +40,7 @@ public class Repo {
      * @param dir a file to be used as a repo.
      */
     public Repo(File dir) {
+        this.terminal = new Terminal();
         this.repoDir = dir;
     }
 
@@ -66,7 +51,7 @@ public class Repo {
      * @param dir a file to be used as a repo.
      */
     public Repo(String dir) {
-        this.repoDir = new File(dir);
+        this(new File(dir));
     }
 
     /**
@@ -84,44 +69,11 @@ public class Repo {
      * deletes the associated directory.
      */
     public void remove() {
-        waitFor();
+        terminal.waitFor();
         try {
             FileUtils.deleteDirectory(repoDir);
         } catch (IOException ex) {
             Logger.getLogger(Repo.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private void printProcessOutput() {
-        new RecursiveAction() {
-            @Override
-            protected void compute() {
-                BufferedReader br = new BufferedReader(new InputStreamReader(mostRecentProcess.getInputStream()));
-
-                try {
-                    waitFor();
-                    while (br.ready()) System.out.println(br.readLine());
-                    br.close();
-                } catch (IOException ex) {
-                    Logger.getLogger(Repo.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }.fork();
-    }
-
-    /**
-     * runs the provided command from the terminal.  Note: complicated commands don't work.
-     * @param command 
-     */
-    private void TerminalCMD(String command) {
-        try {
-            waitFor();
-            System.out.println(command);
-            mostRecentProcess = RUNTIME.exec(command);
-            printProcessOutput();
-        } catch (Exception ex) {
-            Logger.getLogger(RepoManager.class.getName()).log(Level.SEVERE, null, ex);
-            throw new RuntimeException(ex);
         }
     }
 
@@ -132,7 +84,7 @@ public class Repo {
      * @return this repo
      */
     public Repo clone(String gitAddress) {
-        TerminalCMD("git clone " + gitAddress + " " + quote(repoDir.getPath()));
+        terminal.cmd("git clone " + gitAddress + " " + quote(repoDir.getPath()));
         return this;
     }
 
@@ -142,7 +94,7 @@ public class Repo {
      * @param addition the text to be appended.
      */
     public void addToReadMe(String addition) {
-        waitFor();
+        terminal.waitFor();
         try {
             FileUtils.writeStringToFile(new File(repoDir, "README.md"), addition, true);
         } catch (IOException ex) {
@@ -152,6 +104,7 @@ public class Repo {
 
     /**
      * returns a new string in quotes
+     *
      * @param inner a string that wants quotation marks
      * @return a new string with quotation marks
      */
@@ -161,7 +114,8 @@ public class Repo {
 
     /**
      * the git command for this repo
-     * @return 
+     *
+     * @return
      */
     private String git() {
         return "git -C " + quote(repoDir.getPath());
@@ -198,7 +152,6 @@ public class Repo {
     public static final String commitM(String message) {
         return "commit -m" + quote(message);
     }
-    
 
     /**
      * git push
@@ -227,7 +180,7 @@ public class Repo {
      * @return
      */
     public File getRepoDir() {
-        waitFor();
+        terminal.waitFor();
         return repoDir;
     }
 
@@ -237,7 +190,7 @@ public class Repo {
      * @param remove the line to be removed
      */
     public void unignore(String remove) {
-        waitFor();
+        terminal.waitFor();
         try {
             File gitIgnore = new File(repoDir, ".gitignore");
             List<String> lines = FileUtils.readLines(gitIgnore);
@@ -255,8 +208,8 @@ public class Repo {
      */
     public void git(String command) {
         if (command.startsWith("clone"))
-            TerminalCMD("git " + command + quote(repoDir.getPath()));
-        else TerminalCMD(Repo.this.git() + command);
+            terminal.cmd("git " + command + quote(repoDir.getPath()));
+        else terminal.cmd(Repo.this.git() + command);
     }
 
     /**
@@ -265,7 +218,7 @@ public class Repo {
      * @return
      */
     public String name() {
-        waitFor();
+        terminal.waitFor();
         String url_1 = "url = git@github.com:",
                 url_2 = "url = https://github.com/",
                 url = null;
@@ -273,7 +226,7 @@ public class Repo {
 
         try {
             File config = new File(repoDir, ".git/config");
-            try (BufferedReader reader = new BufferedReader(new FileReader(config))) {
+            try ( BufferedReader reader = new BufferedReader(new FileReader(config))) {
                 while (reader.ready()) {
                     String line = reader.readLine();
                     if (line.contains(url_1)) {
@@ -288,7 +241,7 @@ public class Repo {
                         reader.close();
                         return line.substring(line.indexOf(url) + url.length(), line.indexOf(".git"));
                     }
-                    
+
                 }
             }
             return null;
@@ -301,21 +254,13 @@ public class Repo {
     }
 
     public void TravisLogs() {
-        try {
 
 //            String command = "C:/cygwin64/bin/bash.exe -c travis logs -r " + name();
-            String command = "C:/Ruby25-x64/bin/travis.bat logs -r " + name();
+        String command = "C:/Ruby25-x64/bin/travis.bat logs -r " + name();
 
-            System.out.println(command);
-            waitFor();
+        System.out.println(command);
+        terminal.cmd(command.split(" "));
 
-            mostRecentProcess = RUNTIME.exec(command.split(" "));
-
-            printProcessOutput();
-
-        } catch (IOException ex) {
-            Logger.getLogger(Repo.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     public static void main(String[] args) {
@@ -337,7 +282,9 @@ public class Repo {
                     + ":" + second;
 //        git("checkout 'master@{" + time + "}'");
 
-            String command = git() + "checkout `git rev-list -n 1 --first-parent --before=\""+time+"\" master`";
+            String command = git()
+                    + "checkout `git rev-list -n 1 --first-parent --before=\""
+                    + time + "\" master`";
 //"checkout 'master@{" + time + "}'";
 //            String command = "ping " + "127.0.0.1";
             System.out.println(command);

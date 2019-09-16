@@ -10,7 +10,7 @@ import specs.SpecsReader;
  */
 public class MossSpecs {
 
-    public final String mossUserID, programmingLanguage;
+    public final String mossUserID;
 
     /**
      * This class holds details pertaining to a moss account.
@@ -23,7 +23,6 @@ public class MossSpecs {
         try {
             try (SpecsReader reader = new SpecsReader(specsFile)) {
                 this.mossUserID = reader.readLine();
-                this.programmingLanguage = reader.readLine();
             }
         } catch (IOException ex) {
             throw new RuntimeException(ex);
