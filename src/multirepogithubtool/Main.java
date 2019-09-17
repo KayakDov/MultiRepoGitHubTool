@@ -80,9 +80,9 @@ public class Main {
      */
     public static void main(String[] args) {
         
-        args = new String[2];
-        args[0] = "moss";//clone";
-        args[1] = "CourseSpecs.txt";
+//        args = new String[2];
+//        args[0] = "moss";//clone";
+//        args[1] = "CourseSpecs.txt";
 //        args[2] = "ee551homework2-";
 //        args[3] = "EE551_Spring2019_homework2";
 
