@@ -24,7 +24,6 @@ public class Moss extends RecursiveTask<String>{
         this.rm = rm;
         rm.getCourseSpecs();
         mossDir = new File(rm.getParentAll(), "mossWork");
-        mossDir.mkdir();
 
         this.socketClient = new SocketClient();
         socketClient.setUserID(rm.getCourseSpecs().mossUserID);
@@ -100,7 +99,7 @@ public class Moss extends RecursiveTask<String>{
     private static void copyToDir(File from, File toDir, int numAttempts) {
         try {
             if (from.isFile()) FileUtils.copyFileToDirectory(from, toDir);
-            if (from.isDirectory()) FileUtils.copyDirectory(from, toDir);
+            else if (from.isDirectory()) FileUtils.copyDirectory(from, toDir);
         } catch (IOException ex) {
             if (numAttempts > 0)
                 try {

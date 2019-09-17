@@ -5,10 +5,8 @@ import it.zielke.moji.SocketClient;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.concurrent.RecursiveTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import multirepogithubtool.RepoManager;
 import org.apache.commons.io.FileUtils;
 
 /**
