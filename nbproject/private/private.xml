@@ -5,10 +5,11 @@
         <group>
             <file>file:/C:/Users/Kayak/Documents/GitHub/homeworkGradingTool/src/specs/SpecsReader.java</file>
             <file>file:/C:/Users/Kayak/Documents/GitHub/homeworkGradingTool/src/multirepogithubtool/CourseSpecs.java</file>
+            <file>file:/C:/Users/Kayak/Documents/GitHub/homeworkGradingTool/src/filesOnly/Files.java</file>
             <file>file:/C:/Users/Kayak/Documents/GitHub/homeworkGradingTool/src/multirepogithubtool/TestManager.java</file>
             <file>file:/C:/Users/Kayak/Documents/GitHub/homeworkGradingTool/src/multirepogithubtool/Main.java</file>
             <file>file:/C:/Users/Kayak/Documents/GitHub/homeworkGradingTool/src/multirepogithubtool/RepoManager.java</file>
-            <file>file:/C:/Users/Kayak/Documents/GitHub/homeworkGradingTool/src/multirepogithubtool/Moss.java</file>
+            <file>file:/C:/Users/Kayak/Documents/GitHub/homeworkGradingTool/src/filesOnly/JavaFile.java</file>
         </group>
     </open-files>
 </project-private>

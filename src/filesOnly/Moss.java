@@ -96,7 +96,7 @@ public class Moss {
     public static void main(String[] args) {
         SortJavaCPP.sort("C:/Users/Kayak/Documents/DAST_TA/submissions");
         new Moss("C:/Users/Kayak/Documents/DAST_TA/submissions/cpp", "MossSpecs.txt", "cc");
-        new Moss("C:/Users/Kayak/Documents/DAST_TA/submissions/java", "MossSpecs.txt", "java");
+        new Moss("C:/Users/Kayak/Documents/DAST_TA/submissions/Java", "MossSpecs.txt", "java");
 
     }
 }

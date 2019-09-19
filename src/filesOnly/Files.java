@@ -57,9 +57,9 @@ public class Files extends ArrayList<File> {
     }
 
     public static void main(String[] args) {
-        new Files("C:/Users/Kayak/Documents/DAST_TA/submissions/java").forEach(dir ->{
-            
-            new JavaFile(((File)dir).listFiles()[0]).compile();
+        new Files("C:/Users/Kayak/Documents/DAST_TA/submissions/java").forEach(file ->{
+            new JavaFile(file).fixName();
+//            new JavaFile(((File)dir).listFiles()[0]).compile();
         });
     }
 

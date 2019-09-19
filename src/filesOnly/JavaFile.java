@@ -24,7 +24,7 @@ public class JavaFile extends File {
         this(file.getPath());
     }
 
-    public String lineWithClassName() {
+    private String lineWithClassName() {
         try {
             try ( BufferedReader br = new BufferedReader(new FileReader(this))) {
                 while (br.ready()) {
@@ -44,7 +44,7 @@ public class JavaFile extends File {
         }
     }
 
-    public String className() {
+    private String className() {
         String lineWithName = lineWithClassName();
         while (lineWithName.contains("  "))
             lineWithName = lineWithName.replace("  ", " ");
