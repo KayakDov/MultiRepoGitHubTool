@@ -22,7 +22,6 @@ public class Moss extends RecursiveTask<String>{
 
     public Moss(RepoManager rm) {
         this.rm = rm;
-        rm.getCourseSpecs();
         mossDir = new File(rm.getParentAll(), "mossWork");
 
         this.socketClient = new SocketClient();

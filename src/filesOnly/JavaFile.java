@@ -33,7 +33,7 @@ public class JavaFile extends File {
                         if (line.contains("{") || br.readLine().startsWith("{")) {
                             br.close();
                             return line;
-                        } else throw new RuntimeException("File " + this
+                        } else System.err.println("File " + this
                                     + " requires attention.  Class name is a bit funny.");
                 }
             }
@@ -81,6 +81,7 @@ public class JavaFile extends File {
     }
 
     public void fixName() {
+        if(!isFile()) return;
         
         removePackage();
         

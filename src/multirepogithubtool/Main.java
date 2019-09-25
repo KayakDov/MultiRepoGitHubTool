@@ -80,10 +80,11 @@ public class Main {
      */
     public static void main(String[] args) {
         
-//        args = new String[2];
+//        args = new String[3];
 //        args[0] = "moss";//clone";
-//        args[1] = "CourseSpecs.txt";
-//        args[2] = "ee551homework2-";
+//        args[1] = "C:/Users/Kayak/Documents/GitHub/CourseSpecs.txt";
+//        args[2] = "C:/Users/Kayak/Documents/GitHub/tempFileStorage";
+ //        args[2] = "ee551homework2-";
 //        args[3] = "EE551_Spring2019_homework2";
 
         if (args.length > 0) {

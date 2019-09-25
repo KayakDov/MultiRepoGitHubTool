@@ -1,64 +1,74 @@
 /**
  * Course: CPE 593-B
- * Project name: homework2.java
- * Author: Tianhao Zhu
- * Description: This class read three string number, then return the gcd, lcm of first two number,
- * and a^b mod r
- * Date: 9/10/2019
+ * @Title homework3.java
+ * @author Tianhao Zhu
+ * @Description MillerRabin
+ * Date: 9/18/2019
  * How to run the code:
  *  - In terminal, or cmd, run:
- *  - "java homework2.java a b r"
- *  - a b r should change to the number you want.
- *  - eg. "java homework2.java 60 3 1231"
+ *  - "java homework3.java n k"
+ *  - n should change to the checking number, k is the times of loop
+ *  - eg. "java homework3.jave 524287 1000"
  ***/
-public class homework2{
+import java.util.Random;
+import java.lang.Math;
+public class homework3 {
     /**
-     * The greatest common denominator of a nd b. Using mod to find it.
-     * complexity: O(longn), generally verry fast. Worst case: two numbers are from close Fibonacci.
+     * powermod function:
+     * @param a long integer
+     * @param b long integer
+     * @param r long integer
+     * @return the result of (a^b)mod r
      */
-    public static int gcd(int a, int b){
-        while (b != 0){
-            int temp = a % b;
-            a = b;
-            b = temp;
-        }
-        return a;
-    }
-    /**
-     * The least common multiple of a and b. Using gcd to find it. lcm = a * b / gcd(a, b)
-     * complexity: O(longn)
-     */
-    public static int lcm(int a, int b){
-        int gcd_a_b = gcd(a,b);
-        return a * b / gcd_a_b;
-    }
-
-    /**
-     * The result of a^b mod r
-     * start from prob = 1, then calculate the prob * a mod r.
-     * Then a = a ^2, and b = b/2. Repeat prob * a mod r until b become 0.
-     * If a nd b are too large, the integer may not have enough space to store the result number.
-     * Then the result will become 0(because a = 0). Can converse the type to long or even float.
-     * Doesn't do that in homework2.
-     */
-    public static int powermod(int a, int b, int r){
-        int prob = 1;
+    public static long powermod(long a, long b, long r){
+        long prob = 1;
         while (b > 0){
-            if (b % 2 != 0){
-                prob = (prob * a) % r;
-            }
-            a = a * a;
+            if (b % 2 != 0) prob = (prob * a) % r;
+            a = (a * a) % r;
             b = b / 2;
         }
         return prob;
     }
+
+    /**
+     * Miller Rabin function to check whether the number n is prime or composite
+     * @param n long integer
+     * @param k long integer
+     * @return if the number is checked prime,
+     * then it shows "probably prime", otherwise shows "composite"
+     */
+    public static String MillerRabin(long n, int k){
+        if(n <= 3) return "prime";
+        Random random = new Random();
+        long d = n-1;
+        long r = 0;
+        while(d % 2 == 0){
+            d /= 2;
+            r += 1;
+        }
+        for(int i = 1; i <= k; i++){
+            long a = Math.abs(random.nextLong());
+            a = a %(n-3) +2;
+            long x = powermod(a, d, n);
+            if((x == 1) || (x == n-1)) {
+                continue;
+            }
+            int flag = 0;
+            for(int j = 0; j<= r-1; j++) {
+                x = powermod(x, 2, n);
+                if (x == n - 1){
+                    flag = 1;
+                    break;
+                }
+                if (x == 1) return "composite";
+            }
+            if(flag == 0) return "composite";
+        }
+        return "probably prime";
+    }
     public static void main(String[]args){
-        int a = Integer.parseInt(args[0]);
-        int b = Integer.parseInt(args[1]);
-        int r = Integer.parseInt(args[2]);
-        System.out.println("a = " + a + ", b = " + b + ", c = " + r);
-        System.out.println("The greatest common denominator of a and b is " + gcd(a, b));
-        System.out.println("The least common multiple of a and b is " + lcm(a, b));
-        System.out.println("The result of 'a ^ b mod r' is " + powermod(a, b, r));
+        int n = Integer.parseInt(args[0]);
+        int k = Integer.parseInt(args[1]);
+        System.out.println("The number " + n + " is " + MillerRabin(n,k));
     }
 }

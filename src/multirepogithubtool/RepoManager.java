@@ -45,7 +45,7 @@ public class RepoManager extends ArrayList<Repo> {
         return parentAll;
     }
 
-    public final static String DEF_FILE_LOC = "tempFileStorage";
+    public final static String DEF_FILE_LOC = "../tempFileStorage";
 
     /**
      * Constructor, stores files to the default file location
